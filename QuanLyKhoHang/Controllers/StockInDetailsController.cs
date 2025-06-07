@@ -167,5 +167,22 @@ namespace QuanLyKhoHang.Controllers
         {
             return _context.StockInDetails.Any(e => e.Id == id);
         }
+
+        public async Task<IActionResult> Print(int id)
+        {
+            var stockIn = await _context.StockIns
+                .Include(s => s.Supplier)
+                .Include(s => s.StockInDetails)
+                    .ThenInclude(d => d.Product)
+                .FirstOrDefaultAsync(s => s.Id == id);
+
+            if (stockIn == null)
+            {
+                return NotFound();
+            }
+            return View(stockIn);
+        }
+
+
     }
 }
