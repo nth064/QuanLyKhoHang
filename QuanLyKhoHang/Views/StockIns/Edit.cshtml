@@ -1,0 +1,104 @@
+﻿@model QuanLyKhoHang.Models.StockIn
+
+@{
+    ViewData["Title"] = "Sửa Phiếu Nhập";
+    var products = ViewBag.Products as List<QuanLyKhoHang.Models.Product>;
+    var details = Model.StockInDetails?.ToList() ?? new List<QuanLyKhoHang.Models.StockInDetail>();
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<form asp-action="Edit" method="post">
+    @Html.AntiForgeryToken()
+    <input type="hidden" asp-for="Id" />
+
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+    <div class="form-group">
+        <label asp-for="SupplierId">Nhà Cung Cấp</label>
+        <select asp-for="SupplierId" class="form-control" asp-items="ViewBag.SupplierList"></select>
+        <span asp-validation-for="SupplierId" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Date">Ngày Nhập</label>
+        <input asp-for="Date" class="form-control" type="date" />
+        <span asp-validation-for="Date" class="text-danger"></span>
+    </div>
+
+    <hr />
+    <h4>Chi tiết sản phẩm</h4>
+
+    <div id="product-details">
+        @for (int i = 0; i < details.Count; i++)
+        {
+            <div class="product-detail row mb-2">
+                <div class="col-md-4">
+                    <select name="details[@i].ProductId" class="form-control">
+                        @foreach (var p in products)
+                        {
+                            @if (details[i].ProductId == p.Id)
+                            {
+                                <option value="@p.Id" selected="selected">@p.Name</option>
+                            }
+                            else
+                            {
+                                <option value="@p.Id">@p.Name</option>
+                            }
+                        }
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <input name="details[@i].Quantity" class="form-control" type="number" value="@details[i].Quantity" placeholder="Số lượng" />
+                </div>
+                <div class="col-md-3">
+                    <input name="details[@i].Price" class="form-control" type="number" step="0.01" value="@details[i].Price" placeholder="Giá nhập" />
+                </div>
+                <div class="col-md-2">
+                    <button type="button" class="btn btn-danger btn-sm" onclick="removeRow(this)">Xóa</button>
+                </div>
+            </div>
+        }
+    </div>
+
+    <button type="button" class="btn btn-secondary mb-3" onclick="addRow()">Thêm dòng</button>
+
+    <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
+    <a asp-action="Index" class="btn btn-secondary">Quay lại</a>
+</form>
+
+@section Scripts {
+    <script>
+        let rowIndex = @details.Count;
+        const products = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(products.Select(p => new { p.Id, p.Name })));
+
+        function addRow() {
+            const container = document.getElementById("product-details");
+            const div = document.createElement("div");
+            div.classList.add("product-detail", "row", "mb-2");
+
+            div.innerHTML = `
+                <div class="col-md-4">
+                    <select name="details[${rowIndex}].ProductId" class="form-control">
+                        ${products.map(p => `<option value="${p.Id}">${p.Name}</option>`).join("")}
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <input name="details[${rowIndex}].Quantity" class="form-control" type="number" placeholder="Số lượng" value="1" />
+                </div>
+                <div class="col-md-3">
+                    <input name="details[${rowIndex}].Price" class="form-control" type="number" step="0.01" placeholder="Giá nhập" value="0" />
+                </div>
+                <div class="col-md-2">
+                    <button type="button" class="btn btn-danger btn-sm" onclick="removeRow(this)">Xóa</button>
+                </div>
+            `;
+            container.appendChild(div);
+            rowIndex++;
+        }
+
+        function removeRow(button) {
+            button.closest(".product-detail").remove();
+        }
+    </script>
+}

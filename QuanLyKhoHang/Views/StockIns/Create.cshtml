@@ -1,0 +1,98 @@
+﻿@model QuanLyKhoHang.Models.StockIn
+@{
+    ViewData["Title"] = "Tạo phiếu nhập kho";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var products = (IEnumerable<QuanLyKhoHang.Models.Product>)ViewBag.Products;
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<form asp-action="Create" method="post">
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+    <div class="form-group">
+        <label>Nhà cung cấp</label>
+        <select asp-for="SupplierId" class="form-control" asp-items="ViewBag.SupplierList">
+            <option value="">-- Chọn nhà cung cấp --</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label>Ngày nhập</label>
+        <input asp-for="Date" class="form-control" type="date" value="@DateTime.Now.ToString("yyyy-MM-dd")" />
+    </div>
+
+    <hr />
+    <h4>Chi tiết sản phẩm nhập</h4>
+
+    <table class="table" id="detailsTable">
+        <thead>
+            <tr>
+                <th>Sản phẩm</th>
+                <th>Số lượng</th>
+                <th>Giá nhập</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    <select name="details[0].ProductId" class="form-control">
+                        <option value="">-- Chọn sản phẩm --</option>
+                        @foreach (var p in products)
+                        {
+                            <option value="@p.Id">@p.Name</option>
+                        }
+                    </select>
+                </td>
+                <td>
+                    <input name="details[0].Quantity" class="form-control" type="number" min="1" />
+                </td>
+                <td>
+                    <input name="details[0].Price" class="form-control" type="number" min="0" step="0.01" />
+                </td>
+                <td>
+                    <button type="button" class="btn btn-danger btn-sm" onclick="removeRow(this)">Xóa</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <button type="button" class="btn btn-secondary" onclick="addRow()">Thêm dòng</button>
+
+    <br /><br />
+    <button type="submit" class="btn btn-primary">Lưu phiếu nhập</button>
+    <a asp-action="Index" class="btn btn-secondary">Quay lại</a>
+</form>
+
+@section Scripts {
+    <script>
+        function addRow() {
+            var table = document.getElementById('detailsTable').getElementsByTagName('tbody')[0];
+            var rowCount = table.rows.length;
+            var products = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(products.Select(p => new { p.Id, p.Name })));
+            var row = table.insertRow(rowCount);
+            row.innerHTML =
+                `<td>
+                    <select name="details[${rowCount}].ProductId" class="form-control">
+                        <option value="">-- Chọn sản phẩm --</option>
+                        ${products.map(p => `<option value="${p.Id}">${p.Name}</option>`).join('')}
+                    </select>
+                </td>
+                <td>
+                    <input name="details[${rowCount}].Quantity" class="form-control" type="number" min="1" />
+                </td>
+                <td>
+                    <input name="details[${rowCount}].Price" class="form-control" type="number" min="0" step="0.01" />
+                </td>
+                <td>
+                    <button type="button" class="btn btn-danger btn-sm" onclick="removeRow(this)">Xóa</button>
+                </td>`;
+        }
+
+        function removeRow(btn) {
+            var row = btn.parentNode.parentNode;
+            row.parentNode.removeChild(row);
+        }
+    </script>
+}
