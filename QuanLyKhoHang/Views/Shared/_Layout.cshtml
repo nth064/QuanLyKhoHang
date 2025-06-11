@@ -1,70 +1,169 @@
 ﻿<!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Warehouse Management</title>
+    <title>@ViewData["Title"] - Quản lý kho</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: #f8fafc;
+            color: #22223b;
+        }
+
+        .main-layout {
+            display: flex;
+            min-height: 100vh;
+            background: #f8fafc;
+        }
+
+        .sidebar {
+            width: 250px;
+            min-height: 100vh;
+            background-color: #fff;
+            color: #22223b;
+            display: flex;
+            padding: 5px 15px ;
+            flex-direction: column;
+            box-shadow: 2px 0 12px rgba(0,0,0,0.07);
+        }
+
+            .sidebar .nav-link {
+                color: #22223b;
+                padding: 10px 15px;
+                border-radius: 4px;
+                font-weight: 500;
+                transition: background 0.15s, color 0.15s;
+            }
+
+                .sidebar .nav-link:hover {
+                    background-color: #e3e9f7;
+                    color: #1b6ec2;
+                }
+
+                .sidebar .nav-link.active {
+                    background-color: #1b6ec2;
+                    color: #fff;
+                }
+
+            .sidebar h4 {
+                color: #1b6ec2;
+            }
+
+            .sidebar .text-muted {
+                color: #6c757d !important;
+            }
+
+        .login-section {
+            color: #22223b;
+            background-color: #f8fafc;
+            padding: 10px 15px;
+            border-top: 1px solid #e3e9f7;
+        }
+
+        .main-content {
+            flex-grow: 1;
+            padding: 32px 40px 24px 40px;
+            background: #f8fafc;
+            color: #22223b;
+            min-height: 100vh;
+        }
+
+        .footer {
+            background: #fff;
+            color: #6c757d;
+            padding: 10px 0;
+            text-align: center;
+            margin-top: 40px;
+            border-radius: 8px;
+            box-shadow: 0 0 8px rgba(0,0,0,0.03);
+        }
+
+        @@media (max-width: 900px) {
+            .main-content
+
+        {
+            padding: 18px 5px 12px 5px;
+        }
+
+        .sidebar {
+            width: 100px;
+            min-width: 80px;
+            font-size: 0.95rem;
+        }
+
+            .sidebar h4 {
+                font-size: 1.1rem;
+            }
+
+        }
+    </style>
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-controller="Home" asp-action="Index">Warehouse</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-                        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                        <li class="nav-item">
-                            <a class="nav-link" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-controller="Products" asp-action="Index">Products</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-controller="Categories" asp-action="Index">Categories</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-controller="Suppliers" asp-action="Index">Suppliers</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-controller="Customers" asp-action="Index">Customers</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-controller="StockIns" asp-action="Index">Stock In</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-controller="StockInDetails" asp-action="Index">Stock In Details</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-controller="StockOuts" asp-action="Index">Stock Out</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-controller="StockOutDetails" asp-action="Index">Stock Out Details</a>
-                        </li>
-                    </ul>
-                    <ul class="navbar-nav">
-                        <li class="nav-item">
-                            <partial name="_LoginPartial" />
-                        </li>
-                    </ul>
-                </div>
+    <div class="main-layout">
+        <nav class="sidebar">
+            <br />
+            <h4 class="mb-4">Quản lý kho</h4>
+
+            <!-- Nhóm chức năng chính -->
+            <span class="text-muted text-uppercase small mb-2">Chức năng chính</span>
+            <ul class="nav nav-pills flex-column mb-3">
+                <li class="nav-item">
+                    <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Trang chủ</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" asp-area="Admin" asp-controller="Products" asp-action="Index">Sản phẩm</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" asp-area="Admin" asp-controller="Categories" asp-action="Index">Danh mục</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" asp-area="Admin" asp-controller="Suppliers" asp-action="Index">Nhà cung cấp</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" asp-area="Admin" asp-controller="Customers" asp-action="Index">Khách hàng</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" asp-area="Admin" asp-controller="Users" asp-action="Index">Quản lý người dùng</a>
+                </li>
+            </ul>
+
+            <!-- Nhóm quản lý kho -->
+            <span class="text-muted text-uppercase small mb-2">Quản lý kho</span>
+            <ul class="nav nav-pills flex-column mb-4">
+                <li class="nav-item">
+                    <a class="nav-link" asp-area="Admin" asp-controller="StockIns" asp-action="Index">Nhập kho</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" asp-area="Admin" asp-controller="StockInDetails" asp-action="Index">Chi tiết nhập kho</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" asp-area="Admin" asp-controller="StockOuts" asp-action="Index">Xuất kho</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" asp-area="Admin" asp-controller="StockOutDetails" asp-action="Index">Chi tiết xuất kho</a>
+                </li>
+            </ul>
+
+            <!-- Khu vực người dùng -->
+            <div class="login-section mt-auto">
+                <partial name="_LoginPartial" />
             </div>
         </nav>
-    </header>
-    <div class="container mt-4">
-        <main role="main" class="pb-3">
+
+        <!-- Nội dung chính -->
+        <main class="main-content">
             @RenderBody()
+            <div class="footer">© 2025 - Hệ thống quản lý kho</div>
         </main>
     </div>
-    <footer class="border-top footer text-muted mt-4">
-        <div class="container">
-            &copy; 2025 - Warehouse Management
-        </div>
-    </footer>
+
+    <!-- Script -->
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>

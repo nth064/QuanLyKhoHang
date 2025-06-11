@@ -1,0 +1,23 @@
+﻿@model QuanLyKhoHang.Models.Category
+
+@{
+    ViewData["Title"] = "Xóa danh mục";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+
+<div class="delete-container">
+    <div class="delete-title">Bạn có chắc chắn muốn xóa danh mục này?</div>
+    <div class="delete-info">
+        <dl class="row">
+            <dt class="col-sm-4">Tên danh mục</dt>
+            <dd class="col-sm-8">@Html.DisplayFor(model => model.Name)</dd>
+        </dl>
+    </div>
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="Id" />
+        <input type="submit" value="Xóa" class="btn btn-danger" />
+        <a asp-action="Index" class="back-link">Quay lại danh sách</a>
+    </form>
+</div>

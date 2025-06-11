@@ -1,0 +1,79 @@
+﻿@model IEnumerable<QuanLyKhoHang.Models.Category>
+@{
+    ViewData["Title"] = "Quản lý danh mục";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="category-container">
+    <div class="category-header">
+        <span class="category-title">Quản lý danh mục</span>
+        <a asp-action="Create" class="btn-create"><i class="fa fa-plus"></i> Thêm mới</a>
+    </div>
+    <div class="search-container" style="margin-bottom: 20px;">
+        <input type="text" id="searchInput" class="form-control" placeholder="Tìm kiếm..." autocomplete="off" />
+    </div>
+    <div class="table-responsive">
+        <table class="custom-table category-table">
+            <thead>
+                <tr>
+                    <th>Tên danh mục</th>
+                    <th style="width:120px;">Thao tác</th>
+                </tr>
+            </thead>
+            <tbody id="categoryTableBody">
+                @if (!Model.Any())
+                {
+                    <tr>
+                        <td colspan="2" style="text-align:center;color:#888;">Chưa có danh mục nào.</td>
+                    </tr>
+                }
+                else
+                {
+                    foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@Html.DisplayFor(modelItem => item.Name)</td>
+                            <td class="action-icons">
+                                <a asp-action="Edit" asp-route-id="@item.Id" title="Sửa"><i class="fa-solid fa-pen-to-square"></i></a>
+                                <a asp-action="Details" asp-route-id="@item.Id" title="Chi tiết"><i class="fa-solid fa-circle-info"></i></a>
+                                <a asp-action="Delete" asp-route-id="@item.Id" title="Xóa"><i class="fa-solid fa-trash"></i></a>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(function () {
+            $('#searchInput').on('input', function () {
+                var searchTerm = $(this).val();
+                $.ajax({
+                    url: '@Url.Action("Search", "Categories")',
+                    data: { term: searchTerm },
+                    type: 'GET',
+                    success: function (data) {
+                        var html = '';
+                        if (data.length === 0) {
+                            html = '<tr><td colspan="2" style="text-align:center;color:#888;">Không tìm thấy danh mục phù hợp.</td></tr>';
+                        } else {
+                            data.forEach(function (item) {
+                                html += `<tr>
+                                    <td>${item.name}</td>
+                                    <td class="action-icons">
+                                        <a href="/Admin/Categories/Edit/${item.id}" title="Sửa"><i class="fa-solid fa-pen-to-square"></i></a>
+                                        <a href="/Admin/Categories/Details/${item.id}" title="Chi tiết"><i class="fa-solid fa-circle-info"></i></a>
+                                        <a href="/Admin/Categories/Delete/${item.id}" title="Xóa"><i class="fa-solid fa-trash"></i></a>
+                                    </td>
+                                </tr>`;
+                            });
+                        }
+                        $('#categoryTableBody').html(html);
+                    }
+                });
+            });
+        });
+    </script>
+}

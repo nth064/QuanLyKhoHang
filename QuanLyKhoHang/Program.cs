@@ -33,6 +33,7 @@ builder.Services.AddScoped<IStockInRepository, EFStockInRepository>();
 builder.Services.AddScoped<IStockInDetailRepository, EFStockInDetailRepository>();
 builder.Services.AddScoped<IStockOutRepository, EFStockOutRepository>();
 builder.Services.AddScoped<IStockOutDetailRepository, EFStockOutDetailRepository>();
+builder.Services.AddHostedService<RoleInitializerHostedService>();
 
 builder.Services.AddRazorPages();
 

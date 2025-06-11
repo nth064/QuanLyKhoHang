@@ -1,0 +1,71 @@
+﻿@model IEnumerable<QuanLyKhoHang.Models.StockOut>
+@{
+    ViewData["Title"] = "Danh sách xuất kho";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="product-container">
+    <div class="product-header">
+        <span class="product-title">Danh sách xuất kho</span>
+        <a asp-action="Create" class="btn-create"><i class="fa fa-plus"></i> Thêm phiếu xuất</a>
+    </div>
+    <form asp-action="Index" method="get" class="mb-3 d-flex flex-wrap align-items-center gap-2" style="max-width:600px;">
+        <input type="text" name="searchString" class="form-control" style="max-width:220px;" placeholder="Tìm kiếm..." value="@ViewBag.SearchString" />
+        <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i> Tìm kiếm</button>
+    </form>
+    <div class="table-responsive">
+        <table class="custom-table">
+            <thead>
+                <tr>
+                    <th>Khách hàng</th>
+                    <th>Ngày xuất</th>
+                    <th>Sản phẩm</th>
+                    <th>Số lượng</th>
+                    <th>Giá xuất</th>
+                    <th style="width:120px;">Thao tác</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (!Model.Any())
+                {
+                    <tr>
+                        <td colspan="6" style="text-align:center;color:#888;">Chưa có phiếu xuất kho nào.</td>
+                    </tr>
+                }
+                else
+                {
+                    foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.Customer?.Name</td>
+                            <td>@item.Date.ToString("dd/MM/yyyy")</td>
+                            <td>
+                                @foreach (var detail in item.StockOutDetails)
+                                {
+                                    <div>@detail.Product?.Name</div>
+                                }
+                            </td>
+                            <td>
+                                @foreach (var detail in item.StockOutDetails)
+                                {
+                                    <div>@detail.Quantity</div>
+                                }
+                            </td>
+                            <td>
+                                @foreach (var detail in item.StockOutDetails)
+                                {
+                                    <div>@detail.Price.ToString("N0")</div>
+                                }
+                            </td>
+                            <td class="action-icons">
+                                <a asp-action="Edit" asp-route-id="@item.Id" title="Sửa"><i class="fa-solid fa-pen-to-square"></i></a>
+                                <a asp-action="Details" asp-route-id="@item.Id" title="Chi tiết"><i class="fa-solid fa-circle-info"></i></a>
+                                <a asp-action="Delete" asp-route-id="@item.Id" title="Xóa"><i class="fa-solid fa-trash"></i></a>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
