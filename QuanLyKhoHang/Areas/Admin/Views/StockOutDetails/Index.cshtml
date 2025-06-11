@@ -1,0 +1,55 @@
+﻿@model IEnumerable<QuanLyKhoHang.Models.StockOutDetail>
+@using System.Globalization
+@{
+    ViewData["Title"] = "Chi tiết xuất kho";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var culture = new CultureInfo("vi-VN");
+}
+
+<div class="product-container">
+    <div class="product-header">
+        <span class="product-title">Chi tiết xuất kho</span>
+        <a asp-action="Create" class="btn-create"><i class="fa fa-plus"></i> Thêm chi tiết</a>
+    </div>
+    <form asp-action="Index" method="get" class="mb-3 d-flex flex-wrap align-items-center gap-2" style="max-width:600px;">
+        <input type="text" name="searchString" class="form-control" style="max-width:220px;" placeholder="Tìm kiếm..." value="@ViewBag.SearchString" />
+        <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i> Tìm kiếm</button>
+    </form>
+    <div class="table-responsive">
+        <table class="custom-table">
+            <thead>
+                <tr>
+                    <th>Sản phẩm</th>
+                    <th>Số lượng</th>
+                    <th>Giá xuất</th>
+                    <th>Tổng tiền</th>
+                    <th style="width:120px;">Thao tác</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (!Model.Any())
+                {
+                    <tr>
+                        <td colspan="5" style="text-align:center;color:#888;">Chưa có chi tiết xuất kho nào.</td>
+                    </tr>
+                }
+                else
+                {
+                    foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.Product?.Name</td>
+                            <td>@item.Quantity</td>
+                            <td>@item.Price.ToString("C0", culture)</td>
+                            <td>@(Convert.ToDecimal(item.Quantity * item.Price).ToString("C0", culture))</td>
+                            <td class="action-icons">
+                                <a asp-action="Details" asp-route-id="@item.Id" title="Chi tiết"><i class="fa-solid fa-circle-info"></i></a>
+                                <a asp-action="Print" asp-route-id="@item.Id" title="In phiếu"><i class="fa-solid fa-print"></i></a>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

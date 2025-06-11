@@ -1,0 +1,46 @@
+﻿@model List<Microsoft.AspNetCore.Identity.IdentityUser>
+
+@{
+    ViewData["Title"] = "Users";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var userRolesDict = ViewBag.UserRolesDict as Dictionary<string, IList<string>>;
+}
+
+<h2>Danh sách người dùng</h2>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Email</th>
+            <th>Vai trò</th>
+            <th>Hành động</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model)
+        {
+            <tr>
+                <td>@user.Email</td>
+                <td>
+                    @if (userRolesDict.ContainsKey(user.Id))
+                    {
+                        <ul>
+                            @foreach (var role in userRolesDict[user.Id])
+                            {
+                                <li>@role</li>
+                            }
+                        </ul>
+                    }
+                    else
+                    {
+                        <span>Chưa có vai trò</span>
+                    }
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@user.Id" class="btn btn-sm btn-primary">Chỉnh sửa</a>
+                    <a asp-action="Delete" asp-route-id="@user.Id" class="btn btn-sm btn-primary">Xóa</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

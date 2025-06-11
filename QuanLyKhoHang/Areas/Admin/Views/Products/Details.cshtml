@@ -1,0 +1,32 @@
+﻿@model QuanLyKhoHang.Models.Product
+
+@{
+    ViewData["Title"] = "Chi tiết sản phẩm";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+
+<div class="details-container">
+    <div class="details-title">Chi tiết sản phẩm</div>
+    <dl class="row details-info">
+        <dt class="col-sm-4">Tên sản phẩm</dt>
+        <dd class="col-sm-8">@Html.DisplayFor(model => model.Name)</dd>
+        <dt class="col-sm-4">Mô tả</dt>
+        <dd class="col-sm-8">@Html.DisplayFor(model => model.Description)</dd>
+        <dt class="col-sm-4">Giá</dt>
+        <dd class="col-sm-8">@Html.DisplayFor(model => model.Price)</dd>
+        <dt class="col-sm-4">Số lượng</dt>
+        <dd class="col-sm-8">@Html.DisplayFor(model => model.Quantity)</dd>
+        <dt class="col-sm-4">Ngày tạo</dt>
+        <dd class="col-sm-8">@Html.DisplayFor(model => model.CreatedAt)</dd>
+        <dt class="col-sm-4">Ngày cập nhật</dt>
+        <dd class="col-sm-8">@Html.DisplayFor(model => model.UpdatedAt)</dd>
+        <dt class="col-sm-4">Danh mục</dt>
+        <dd class="col-sm-8">@Html.DisplayFor(model => model.Category.Name)</dd>
+    </dl>
+    <div class="action-links">
+        <a asp-action="Edit" asp-route-id="@Model?.Id">Chỉnh sửa</a>
+        <a asp-action="Index">Quay lại danh sách</a>
+    </div>
+</div>
