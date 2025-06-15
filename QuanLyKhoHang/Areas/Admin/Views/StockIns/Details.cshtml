@@ -5,53 +5,56 @@
     ViewData["Title"] = "Chi tiết nhập kho";
     Layout = "~/Views/Shared/_Layout.cshtml";
     var culture = new CultureInfo("vi-VN");
-
 }
-<h2>@ViewData["Title"]</h2>
-<div>
-    <dl class="row">
-        <dt class="col-sm-2">Nhà cung cấp</dt>
-        <dd class="col-sm-10">@Model.Supplier?.Name</dd>
-        <dt class="col-sm-2">Ngày nhập</dt>
-        <dd class="col-sm-10">@Model.Date.ToString("dd/MM/yyyy")</dd>
-    </dl>
-</div>
-<h4>Chi tiết sản phẩm</h4>
-<table class="table table-bordered">
-    <thead>
-        <tr>
-            <th>Sản phẩm</th>
-            <th>Số lượng</th>
-            <th>Giá nhập</th>
-            <th>Tổng tiền</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var detail in Model.StockInDetails)
-        {
-            <tr>
-                <td>@detail.Product?.Name</td>
-                <td>@detail.Quantity</td>
-                <td>@detail.Price.ToString("C0", culture)</td>
-                <td>@(Convert.ToDecimal(detail.Quantity * detail.Price).ToString("C0", culture))</td>
-            </tr>
-        }
-    </tbody>
-    <tfoot>
-        <tr>
-            <th colspan="3" class="text-end">Tổng cộng</th>
-            <th>
-                @{
-                    var total = Model.StockInDetails?.Sum(d => d.Quantity * d.Price);
-                }
-                @(total.HasValue ? Convert.ToDecimal(total.Value).ToString("C0", culture) : "0 ₫")
-            </th>
-        </tr>
-    </tfoot>
 
-</table>
-<p>
-    <a asp-action="Index" class="btn btn-secondary">Quay lại</a>
-    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Sửa</a>
-    <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger">Xóa</a>
-</p>
+<div class="container mt-4">
+    <h2 class="text-primary">@ViewData["Title"]</h2>
+
+    <dl class="row mb-4">
+        <dt class="col-sm-3">Nhà cung cấp:</dt>
+        <dd class="col-sm-9">@Model.Supplier?.Name</dd>
+
+        <dt class="col-sm-3">Ngày nhập:</dt>
+        <dd class="col-sm-9">@Model.Date.ToString("dd/MM/yyyy")</dd>
+    </dl>
+
+    <h5 class="text-secondary">Chi tiết sản phẩm</h5>
+    <table class="table table-bordered">
+        <thead class="thead-light">
+            <tr>
+                <th>Sản phẩm</th>
+                <th>Số lượng</th>
+                <th>Giá nhập</th>
+                <th>Tổng</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var detail in Model.StockInDetails)
+            {
+                <tr>
+                    <td>@detail.Product?.Name</td>
+                    <td>@detail.Quantity</td>
+                    <td>@detail.Price.ToString("C0", culture)</td>
+                    <td>@(Convert.ToDecimal(detail.Quantity * detail.Price).ToString("C0", culture))</td>
+                </tr>
+            }
+        </tbody>
+        <tfoot>
+            <tr>
+                <th colspan="3" class="text-end">Tổng cộng</th>
+                <th>
+                    @{
+                        var total = Model.StockInDetails?.Sum(d => d.Quantity * d.Price);
+                    }
+                    @(total.HasValue ? Convert.ToDecimal(total.Value).ToString("C0", culture) : "0 ₫")
+                </th>
+            </tr>
+        </tfoot>
+    </table>
+
+    <div class="mt-3">
+        <a asp-action="Index" class="btn btn-secondary">← Quay lại</a>
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">✏️ Sửa</a>
+        <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger">🗑️ Xóa</a>
+    </div>
+</div>

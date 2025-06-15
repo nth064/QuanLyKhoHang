@@ -1,26 +1,28 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using QuanLyKhoHang.Models;
 using QuanLyKhoHang.Repository;
 
 namespace QuanLyKhoHang.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    [Authorize(Roles = SD.Role_Admin + "," + SD.Role_StaffStockIn)]
+    [Authorize(Roles = SD.Role_Admin + "," + SD.Role_StaffStockIn + "," + SD.Role_StaffStockOut)]
     public class SuppliersController : Controller
     {
         private readonly ISupplierRepository _supplierRepository;
+        private readonly ApplicationDBContext _context;
 
-        public SuppliersController(ISupplierRepository supplierRepository)
+        public SuppliersController(ISupplierRepository supplierRepository, ApplicationDBContext context)
         {
             _supplierRepository = supplierRepository;
+            _context = context;
         }
 
         // GET: Supplier
-
         public async Task<IActionResult> Index(string searchString)
         {
-            ViewBag.SearchString = searchString; // Giữ lại từ khóa tìm kiếm
+            ViewBag.SearchString = searchString;
 
             var suppliers = await _supplierRepository.GetAllAsync();
 
@@ -102,6 +104,20 @@ namespace QuanLyKhoHang.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            var supplier = await _supplierRepository.GetByIdAsync(id);
+            if (supplier == null)
+            {
+                return NotFound();
+            }
+
+            // Kiểm tra nếu nhà cung cấp đã có phiếu nhập thì không cho xóa
+            bool hasStockIns = await _context.StockIns.AnyAsync(s => s.SupplierId == id);
+            if (hasStockIns)
+            {
+                ModelState.AddModelError(string.Empty, "Không thể xóa nhà cung cấp vì đã có phiếu nhập liên quan.");
+                return View("Delete", supplier);
+            }
+
             await _supplierRepository.DeleteAsync(id);
             return RedirectToAction(nameof(Index));
         }

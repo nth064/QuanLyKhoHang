@@ -1,0 +1,67 @@
+﻿@model QuanLyKhoHang.Models.StatisticsViewModel
+
+@{
+    ViewData["Title"] = "Thống kê kho hàng";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container py-5">
+    <h2 class="mb-4 text-center">📊 Thống kê tổng quan kho hàng</h2>
+
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="card border-primary shadow">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Tổng sản phẩm</h5>
+                    <h3 class="text-primary">@Model.TotalProducts</h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card border-success shadow">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Tổng nhà cung cấp</h5>
+                    <h3 class="text-success">@Model.TotalSuppliers</h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card border-info shadow">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Tổng khách hàng</h5>
+                    <h3 class="text-info">@Model.TotalCustomers</h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card border-warning shadow">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Tổng đơn nhập</h5>
+                    <h3 class="text-warning">@Model.TotalStockIns</h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card border-danger shadow">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Tổng đơn xuất</h5>
+                    <h3 class="text-danger">@Model.TotalStockOuts</h3>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="col-md-6 offset-md-3">
+            <div class="card bg-dark text-white shadow-lg">
+                <div class="card-body text-center">
+                    <h4 class="card-title">💰 Tổng doanh thu</h4>
+                    <h2 class="text-warning">@Model.TotalRevenue.ToString("N0") ₫</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

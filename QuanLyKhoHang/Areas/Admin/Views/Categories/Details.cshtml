@@ -5,16 +5,18 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-
-
 <div class="details-container">
-    <div class="details-title">Chi tiết danh mục</div>
+    <h2 class="details-title">CHI TIẾT DANH MỤC</h2>
     <dl class="row details-info">
         <dt class="col-sm-4">Tên danh mục</dt>
         <dd class="col-sm-8">@Html.DisplayFor(model => model.Name)</dd>
     </dl>
-    <div class="action-links">
-        <a asp-action="Edit" asp-route-id="@Model?.Id">Chỉnh sửa</a>
-        <a asp-action="Index">Quay lại danh sách</a>
+    <div class="text-center mt-4">
+        <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-primary">
+            <i class="fas fa-edit"></i> Chỉnh sửa
+        </a>
+        <a asp-action="Index" class="btn btn-secondary ms-2">
+            <i class="fas fa-list"></i> Quay lại danh sách
+        </a>
     </div>
 </div>

@@ -5,19 +5,26 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-
-
 <div class="delete-container">
-    <div class="delete-title">Bạn có chắc chắn muốn xóa danh mục này?</div>
-    <div class="delete-info">
+    <h2 class="delete-title text-danger">BẠN CÓ CHẮC MUỐN XÓA DANH MỤC NÀY?</h2>
+    <div class="delete-info mb-4">
         <dl class="row">
             <dt class="col-sm-4">Tên danh mục</dt>
             <dd class="col-sm-8">@Html.DisplayFor(model => model.Name)</dd>
         </dl>
     </div>
+
+    <div asp-validation-summary="All" class="text-danger"></div>
+
     <form asp-action="Delete">
         <input type="hidden" asp-for="Id" />
-        <input type="submit" value="Xóa" class="btn btn-danger" />
-        <a asp-action="Index" class="back-link">Quay lại danh sách</a>
+        <div class="text-center">
+            <button type="submit" class="btn btn-danger">
+                <i class="fas fa-trash"></i> Xóa
+            </button>
+            <a asp-action="Index" class="btn btn-secondary ms-2">
+                <i class="fas fa-list"></i> Quay lại danh sách
+            </a>
+        </div>
     </form>
 </div>

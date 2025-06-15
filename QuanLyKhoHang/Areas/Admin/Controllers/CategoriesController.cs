@@ -11,7 +11,7 @@ using QuanLyKhoHang.Models;
 namespace QuanLyKhoHang.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    [Authorize(Roles = SD.Role_Admin)]
+    [Authorize(Roles = SD.Role_Admin + "," + SD.Role_StaffStockOut + "," + SD.Role_StaffStockOut)]
     public class CategoriesController : Controller
     {
         private readonly ApplicationDBContext _context;
@@ -45,18 +45,17 @@ namespace QuanLyKhoHang.Areas.Admin.Controllers
             return View(category);
         }
 
-        // GET: Categories/Create
+        [Authorize(Roles = SD.Role_Admin)]
         public IActionResult Create()
         {
             return View();
         }
 
         // POST: Categories/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name")] Category category)
+        [Authorize(Roles = SD.Role_Admin)]
+        public async Task<IActionResult> Create(Category category)
         {
             if (ModelState.IsValid)
             {
@@ -64,10 +63,14 @@ namespace QuanLyKhoHang.Areas.Admin.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+
+            // Nếu dữ liệu không hợp lệ, hiển thị lại form với dữ liệu cũ
             return View(category);
         }
 
+
         // GET: Categories/Edit/5
+        [Authorize(Roles = SD.Role_Admin)]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -88,6 +91,7 @@ namespace QuanLyKhoHang.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = SD.Role_Admin)]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name")] Category category)
         {
             if (id != category.Id)
@@ -119,6 +123,7 @@ namespace QuanLyKhoHang.Areas.Admin.Controllers
         }
 
         // GET: Categories/Delete/5
+        [Authorize(Roles = SD.Role_Admin)]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -136,20 +141,29 @@ namespace QuanLyKhoHang.Areas.Admin.Controllers
             return View(category);
         }
 
-        // POST: Categories/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var category = await _context.Categories.FindAsync(id);
-            if (category != null)
+
+            if (category == null)
             {
-                _context.Categories.Remove(category);
+                return NotFound();
             }
 
+            bool hasProducts = _context.Products.Any(p => p.CategoryId == id);
+            if (hasProducts)
+            {
+                ModelState.AddModelError("", "Không thể xóa danh mục này vì có sản phẩm đang sử dụng.");
+                return View(category); 
+            }
+
+            _context.Categories.Remove(category);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
+
 
         private bool CategoryExists(int id)
         {

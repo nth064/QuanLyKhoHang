@@ -1,21 +1,17 @@
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using QuanLyKhoHang.Models;
 
 namespace QuanLyKhoHang.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly ApplicationDBContext _context;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ApplicationDBContext context)
         {
-            _logger = logger;
-        }
-
-        public IActionResult Index()
-        {
-            return View();
+            _context = context;
         }
 
         public IActionResult Privacy()
@@ -28,5 +24,20 @@ namespace QuanLyKhoHang.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+
+        // 👉 Thêm trang hiển thị danh sách sản phẩm
+        public IActionResult Index(int? categoryId)
+        {
+            ViewBag.Categories = _context.Categories.ToList();
+            ViewBag.SelectedCategory = categoryId;
+
+            var products = _context.Products
+                .Include(p => p.Category)
+                .Where(p => !categoryId.HasValue || p.CategoryId == categoryId)
+                .ToList();
+
+            return View(products);
+        }
+
     }
 }
