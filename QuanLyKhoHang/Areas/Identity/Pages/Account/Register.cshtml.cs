@@ -121,6 +121,8 @@ namespace QuanLyKhoHang.Areas.Identity.Pages.Account
 
                 if (result.Succeeded)
                 {
+                    await _userManager.AddToRoleAsync(user, SD.Role_User);
+
                     _logger.LogInformation("User created a new account with password.");
 
                   

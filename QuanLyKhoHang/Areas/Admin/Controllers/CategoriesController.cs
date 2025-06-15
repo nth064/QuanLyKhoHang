@@ -64,7 +64,6 @@ namespace QuanLyKhoHang.Areas.Admin.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            // Nếu dữ liệu không hợp lệ, hiển thị lại form với dữ liệu cũ
             return View(category);
         }
 
@@ -86,9 +85,7 @@ namespace QuanLyKhoHang.Areas.Admin.Controllers
             return View(category);
         }
 
-        // POST: Categories/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+       
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = SD.Role_Admin)]

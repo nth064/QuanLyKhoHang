@@ -64,13 +64,13 @@
                     <strong>Số lượng tồn:</strong>
                 </div>
                 <div class="col-sm-8">
-                    <span class="badge @(Model.Quantity > 0 ? "bg-success" : "bg-danger") fs-6">
+                    <span class="badge @(Model.Quantity > 10 ? "bg-success" : "bg-danger") fs-6">
                         @Model.Quantity
                         @if (Model.Quantity == 0)
                         {
                             <span> - Hết hàng</span>
                         }
-                        else if (Model.Quantity < 10)
+                        else if (Model.Quantity < 11)
                         {
                             <span> - Sắp hết</span>
                         }
