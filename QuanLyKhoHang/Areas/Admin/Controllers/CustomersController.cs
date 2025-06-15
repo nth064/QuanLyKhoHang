@@ -11,7 +11,7 @@ using QuanLyKhoHang.Models;
 namespace QuanLyKhoHang.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    [Authorize(Roles = SD.Role_Admin)]
+    [Authorize(Roles = SD.Role_Admin + "," + SD.Role_StaffStockOut)]
     public class CustomersController : Controller
     {
         private readonly ApplicationDBContext _context;
@@ -22,6 +22,7 @@ namespace QuanLyKhoHang.Areas.Admin.Controllers
         }
 
         // GET: Customers
+
         public async Task<IActionResult> Index(string searchString)
         {
             ViewBag.SearchString = searchString;
@@ -156,14 +157,24 @@ namespace QuanLyKhoHang.Areas.Admin.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var customer = await _context.Customers.FindAsync(id);
-            if (customer != null)
+
+            if (customer == null)
             {
-                _context.Customers.Remove(customer);
+                return NotFound();
             }
 
+            bool hasStockOuts = _context.StockOuts.Any(so => so.CustomerId == id);
+            if (hasStockOuts)
+            {
+                ModelState.AddModelError("", "Không thể xóa khách hàng vì đã có phiếu xuất.");
+                return View(customer);
+            }
+
+            _context.Customers.Remove(customer);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
+
 
         private bool CustomerExists(int id)
         {

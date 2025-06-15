@@ -1,4 +1,5 @@
 ﻿@model QuanLyKhoHang.Models.StockOut
+
 @{
     ViewData["Title"] = "Tạo phiếu xuất";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -6,73 +7,83 @@
     var customers = (IEnumerable<QuanLyKhoHang.Models.Customer>)ViewBag.Customers;
 }
 
-<h2>@ViewData["Title"]</h2>
-<form asp-action="Create" method="post">
-    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-    <div class="form-group">
-        <label>Khách hàng</label>
-        <select asp-for="CustomerId" class="form-control">
-            <option value="">-- Chọn khách hàng --</option>
-            @foreach (var c in customers)
-            {
-                <option value="@c.Id">@c.Name</option>
-            }
-        </select>
-    </div>
-    <div class="form-group">
-        <label>Ngày xuất</label>
-        <input asp-for="Date" class="form-control" type="date" />
-    </div>
-    <hr />
-    <h4>Chi tiết sản phẩm xuất</h4>
-    <table class="table" id="detailsTable">
-        <thead>
-            <tr>
-                <th>Sản phẩm</th>
-                <th>Số lượng</th>
-                <th>Giá xuất</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>
-                    <select name="details[0].ProductId" class="form-control">
-                        <option value="">-- Chọn sản phẩm --</option>
-                        @foreach (var p in products)
-                        {
-                            <option value="@p.Id">@p.Name</option>
-                        }
-                    </select>
-                </td>
-                <td>
-                    <input name="details[0].Quantity" class="form-control" type="number" min="1" />
-                </td>
-                <td>
-                    <input name="details[0].Price" class="form-control" type="number" min="0" step="0.01" />
-                </td>
-                <td>
-                    <button type="button" class="btn btn-danger btn-sm" onclick="removeRow(this)">Xóa</button>
-                </td>
-            </tr>
-        </tbody>
-    </table>
-    <button type="button" class="btn btn-secondary" onclick="addRow()">Thêm dòng</button>
-    <br /><br />
-    <button type="submit" class="btn btn-primary">Lưu phiếu xuất</button>
-    <a asp-action="Index" class="btn btn-secondary">Quay lại</a>
-</form>
+<div class="card shadow p-4">
+    <h2 class="mb-4">@ViewData["Title"]</h2>
+
+    <form asp-action="Create" method="post">
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        <div class="mb-3">
+            <label class="form-label">Khách hàng</label>
+            <select asp-for="CustomerId" class="form-select">
+                <option value="">-- Chọn khách hàng --</option>
+                @foreach (var c in customers)
+                {
+                    <option value="@c.Id">@c.Name</option>
+                }
+            </select>
+        </div>
+
+        <div class="mb-4">
+            <label class="form-label">Ngày xuất</label>
+            <input asp-for="Date" class="form-control" type="date" />
+        </div>
+
+        <hr />
+        <h5 class="mb-3">Chi tiết sản phẩm xuất</h5>
+
+        <table class="table table-bordered" id="detailsTable">
+            <thead class="table-light">
+                <tr>
+                    <th style="width: 40%">Sản phẩm</th>
+                    <th style="width: 15%">Số lượng</th>
+                    <th style="width: 20%">Giá xuất</th>
+                    <th style="width: 10%"></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        <select name="details[0].ProductId" class="form-select">
+                            <option value="">-- Chọn sản phẩm --</option>
+                            @foreach (var p in products)
+                            {
+                                <option value="@p.Id">@p.Name</option>
+                            }
+                        </select>
+                    </td>
+                    <td>
+                        <input name="details[0].Quantity" class="form-control" type="number" min="1" />
+                    </td>
+                    <td>
+                        <input name="details[0].Price" class="form-control" type="number" min="0" step="0.01" />
+                    </td>
+                    <td class="text-center">
+                        <button type="button" class="btn btn-danger btn-sm" onclick="removeRow(this)">X</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <button type="button" class="btn btn-outline-primary mb-3" onclick="addRow()">+ Thêm dòng</button>
+        <br />
+
+        <button type="submit" class="btn btn-success">💾 Lưu phiếu xuất</button>
+        <a asp-action="Index" class="btn btn-secondary">← Quay lại</a>
+    </form>
+</div>
 
 @section Scripts {
     <script>
         function addRow() {
-            var table = document.getElementById('detailsTable').getElementsByTagName('tbody')[0];
-            var rowCount = table.rows.length;
-            var row = table.insertRow(rowCount);
-            var products = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(products.Select(p => new { p.Id, p.Name })));
-            row.innerHTML =
-                `<td>
-                    <select name="details[${rowCount}].ProductId" class="form-control">
+            const table = document.getElementById('detailsTable').getElementsByTagName('tbody')[0];
+            const rowCount = table.rows.length;
+            const products = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(products.Select(p => new { p.Id, p.Name })));
+
+            const row = table.insertRow(rowCount);
+            row.innerHTML = `
+                <td>
+                    <select name="details[${rowCount}].ProductId" class="form-select">
                         <option value="">-- Chọn sản phẩm --</option>
                         ${products.map(p => `<option value="${p.Id}">${p.Name}</option>`).join('')}
                     </select>
@@ -83,12 +94,13 @@
                 <td>
                     <input name="details[${rowCount}].Price" class="form-control" type="number" min="0" step="0.01" />
                 </td>
-                <td>
-                    <button type="button" class="btn btn-danger btn-sm" onclick="removeRow(this)">Xóa</button>
+                <td class="text-center">
+                    <button type="button" class="btn btn-danger btn-sm" onclick="removeRow(this)">X</button>
                 </td>`;
         }
+
         function removeRow(btn) {
-            var row = btn.parentNode.parentNode;
+            const row = btn.closest("tr");
             row.parentNode.removeChild(row);
         }
     </script>

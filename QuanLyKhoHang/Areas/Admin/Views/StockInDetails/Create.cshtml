@@ -1,47 +1,46 @@
 ﻿@model QuanLyKhoHang.Models.StockInDetail
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Thêm chi tiết nhập kho";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Create</h1>
+<div class="form-container">
+    <div class="form-title">Thêm chi tiết nhập kho</div>
+    <form asp-action="Create" method="post">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-<h4>StockInDetail</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="StockInId" class="control-label"></label>
-                <select asp-for="StockInId" class ="form-control" asp-items="ViewBag.StockInId"></select>
-            </div>
-            <div class="form-group">
-                <label asp-for="ProductId" class="control-label"></label>
-                <select asp-for="ProductId" class ="form-control" asp-items="ViewBag.ProductId"></select>
-            </div>
-            <div class="form-group">
-                <label asp-for="Quantity" class="control-label"></label>
-                <input asp-for="Quantity" class="form-control" />
-                <span asp-validation-for="Quantity" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Price" class="control-label"></label>
-                <input asp-for="Price" class="form-control" />
-                <span asp-validation-for="Price" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
-    </div>
-</div>
+        <div class="form-group">
+            <label asp-for="StockInId" class="control-label">Phiếu nhập</label>
+            <select asp-for="StockInId" class="form-control" asp-items="ViewBag.StockInId"></select>
+        </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
+        <div class="form-group">
+            <label asp-for="ProductId" class="control-label">Sản phẩm</label>
+            <select asp-for="ProductId" class="form-control" asp-items="ViewBag.ProductId"></select>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Quantity" class="control-label">Số lượng</label>
+            <input asp-for="Quantity" class="form-control" />
+            <span asp-validation-for="Quantity" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Price" class="control-label">Đơn giá</label>
+            <input asp-for="Price" class="form-control" />
+            <span asp-validation-for="Price" class="text-danger"></span>
+        </div>
+
+        <div class="form-group" style="text-align:center;">
+            <input type="submit" value="Thêm" class="btn btn-primary" />
+        </div>
+    </form>
+    <a asp-action="Index" class="back-link">Quay lại danh sách</a>
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

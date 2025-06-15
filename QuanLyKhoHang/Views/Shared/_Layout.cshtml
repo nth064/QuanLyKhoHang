@@ -128,9 +128,16 @@
                 <li class="nav-item">
                     <a class="nav-link" asp-area="Admin" asp-controller="Customers" asp-action="Index">Khách hàng</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" asp-area="Admin" asp-controller="Users" asp-action="Index">Quản lý người dùng</a>
-                </li>
+				@if (User.IsInRole("Admin"))
+				{
+                    <li class="nav-item">
+                        <a class="nav-link" asp-area="Admin" asp-controller="Users" asp-action="Index">Quản lý người dùng</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-area="Admin" asp-controller="Dashboard" asp-action="Index">Thống kê kho hàng</a>
+                    </li>
+				}
+
             </ul>
 
             <!-- Nhóm quản lý kho -->
@@ -151,15 +158,21 @@
             </ul>
 
             <!-- Khu vực người dùng -->
-            <div class="login-section mt-auto">
-                <partial name="_LoginPartial" />
-            </div>
+            <span class="text-muted text-uppercase small mb-2">Tài khoản</span>
+            <ul class="nav nav-pills flex-column mb-4">
+                <li class="nav-item">
+                    <div class="login-section mt-auto">
+                        <partial name="_LoginPartial" />
+                    </div>
+                </li>
+            </ul>
+            
         </nav>
 
         <!-- Nội dung chính -->
         <main class="main-content">
             @RenderBody()
-            <div class="footer">© 2025 - Hệ thống quản lý kho</div>
+            
         </main>
     </div>
 

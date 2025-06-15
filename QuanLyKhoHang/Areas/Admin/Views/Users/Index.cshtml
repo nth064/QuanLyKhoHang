@@ -1,46 +1,86 @@
 ﻿@model List<Microsoft.AspNetCore.Identity.IdentityUser>
 
 @{
-    ViewData["Title"] = "Users";
+    ViewData["Title"] = "QUẢN LÝ NGƯỜI DÙNG";
     Layout = "~/Views/Shared/_Layout.cshtml";
     var userRolesDict = ViewBag.UserRolesDict as Dictionary<string, IList<string>>;
 }
 
-<h2>Danh sách người dùng</h2>
+<div class="user-container">
+    
 
-<table class="table table-bordered">
-    <thead>
-        <tr>
-            <th>Email</th>
-            <th>Vai trò</th>
-            <th>Hành động</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var user in Model)
+    <!-- Thông báo -->
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <div class="table-responsive">
+        @if (Model.Any())
         {
-            <tr>
-                <td>@user.Email</td>
-                <td>
-                    @if (userRolesDict.ContainsKey(user.Id))
+            <table class="table table-hover user-table align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>Email</th>
+                        <th>Vai trò</th>
+                        <th class="text-center">Hành động</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var user in Model)
                     {
-                        <ul>
-                            @foreach (var role in userRolesDict[user.Id])
-                            {
-                                <li>@role</li>
-                            }
-                        </ul>
+                        <tr>
+                            <td>@user.Email</td>
+                            <td>
+                                @if (userRolesDict.ContainsKey(user.Id))
+                                {
+                                    <ul class="mb-0 ps-3">
+                                        @foreach (var role in userRolesDict[user.Id])
+                                        {
+                                            <li>@role</li>
+                                        }
+                                    </ul>
+                                }
+                                else
+                                {
+                                    <span class="text-muted fst-italic">Chưa có vai trò</span>
+                                }
+                            </td>
+                            <td class="text-center">
+                                <div class="action-icons d-flex justify-content-center gap-2">
+                                    <a asp-action="Edit" asp-route-id="@user.Id" title="Sửa"><i class="fa-solid fa-pen-to-square"></i></a>
+                                    <a asp-action="Details" asp-route-id="@user.Id" title="Chi tiết"><i class="fa-solid fa-circle-info"></i></a>
+                                    <a asp-action="Delete" asp-route-id="@user.Id" title="Xóa"><i class="fa-solid fa-trash"></i></a>
+                                </div>
+                            </td>
+                        </tr>
                     }
-                    else
-                    {
-                        <span>Chưa có vai trò</span>
-                    }
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@user.Id" class="btn btn-sm btn-primary">Chỉnh sửa</a>
-                    <a asp-action="Delete" asp-route-id="@user.Id" class="btn btn-sm btn-primary">Xóa</a>
-                </td>
-            </tr>
+                </tbody>
+            </table>
         }
-    </tbody>
-</table>
+        else
+        {
+            <div class="text-center py-5">
+                <i class="fas fa-users-slash fa-3x text-muted mb-3"></i>
+                <h5 class="text-muted">Không có người dùng nào được tìm thấy</h5>
+                @if (User.IsInRole("Admin"))
+                {
+                    <a asp-action="Create" class="btn btn-primary mt-3">
+                        <i class="fas fa-user-plus"></i> Thêm người dùng đầu tiên
+                    </a>
+                }
+            </div>
+        }
+    </div>
+</div>

@@ -2,34 +2,190 @@
 
 @{
     ViewData["Title"] = "Xóa sản phẩm";
-    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-
-
 <div class="delete-container">
-    <div class="delete-title">Bạn có chắc chắn muốn xóa sản phẩm này?</div>
-    <div class="delete-info">
-        <dl class="row">
-            <dt class="col-sm-4">Tên sản phẩm</dt>
-            <dd class="col-sm-8">@Html.DisplayFor(model => model.Name)</dd>
-            <dt class="col-sm-4">Mô tả</dt>
-            <dd class="col-sm-8">@Html.DisplayFor(model => model.Description)</dd>
-            <dt class="col-sm-4">Giá</dt>
-            <dd class="col-sm-8">@Html.DisplayFor(model => model.Price)</dd>
-            <dt class="col-sm-4">Số lượng</dt>
-            <dd class="col-sm-8">@Html.DisplayFor(model => model.Quantity)</dd>
-            <dt class="col-sm-4">Ngày tạo</dt>
-            <dd class="col-sm-8">@Html.DisplayFor(model => model.CreatedAt)</dd>
-            <dt class="col-sm-4">Ngày cập nhật</dt>
-            <dd class="col-sm-8">@Html.DisplayFor(model => model.UpdatedAt)</dd>
-            <dt class="col-sm-4">Danh mục</dt>
-            <dd class="col-sm-8">@Html.DisplayFor(model => model.Category.Name)</dd>
-        </dl>
+    <h2 class="delete-title">XÓA SẢN PHẨM</h2>
+
+    <div class="alert alert-warning" role="alert">
+        <i class="fas fa-exclamation-triangle"></i>
+        <strong>Cảnh báo!</strong> Bạn có chắc chắn muốn xóa sản phẩm này? Hành động này không thể hoàn tác.
     </div>
-    <form asp-action="Delete">
+
+    <div class="row">
+        <!-- Cột hình ảnh -->
+        <div class="col-md-4">
+            <div class="text-center mb-4">
+                @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                {
+                    <div class="border rounded p-3" style="background: #f8f9fa;">
+                        <img src="@Model.ImageUrl" alt="@Model.Name"
+                             style="max-width: 100%; max-height: 250px; object-fit: contain; border-radius: 8px;" />
+                    </div>
+                }
+                else
+                {
+                    <div class="border rounded p-4 text-center" style="background: #f8f9fa; min-height: 200px; display: flex; align-items: center; justify-content: center;">
+                        <div>
+                            <i class="fas fa-image fa-3x text-muted mb-2"></i>
+                            <p class="text-muted">Chưa có hình ảnh</p>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <!-- Cột thông tin -->
+        <div class="col-md-8">
+            <div class="card border-danger">
+                <div class="card-header bg-danger text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-info-circle"></i> Thông tin sản phẩm sẽ bị xóa
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-sm-4">
+                            <strong>Tên sản phẩm:</strong>
+                        </div>
+                        <div class="col-sm-8">
+                            <span class="fs-5 fw-bold">@Model.Name</span>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-sm-4">
+                            <strong>Danh mục:</strong>
+                        </div>
+                        <div class="col-sm-8">
+                            <span class="badge bg-info">@Model.Category?.Name</span>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-sm-4">
+                            <strong>Giá bán:</strong>
+                        </div>
+                        <div class="col-sm-8">
+                            <span class="fs-5 fw-bold text-success">@Model.Price.ToString("N0") VND</span>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-sm-4">
+                            <strong>Số lượng tồn:</strong>
+                        </div>
+                        <div class="col-sm-8">
+                            <span class="badge @(Model.Quantity > 0 ? "bg-success" : "bg-danger")">
+                                @Model.Quantity
+                            </span>
+                        </div>
+                    </div>
+
+                    @if (!string.IsNullOrEmpty(Model.Description))
+                    {
+                        <div class="row mb-3">
+                            <div class="col-sm-4">
+                                <strong>Mô tả:</strong>
+                            </div>
+                            <div class="col-sm-8">
+                                <p class="text-muted">@Model.Description</p>
+                            </div>
+                        </div>
+                    }
+
+                    <div class="row mb-3">
+                        <div class="col-sm-4">
+                            <strong>Ngày tạo:</strong>
+                        </div>
+                        <div class="col-sm-8">
+                            <span class="text-muted">
+                                <i class="fas fa-calendar-plus"></i>
+                                @Model.CreatedAt.Value.ToString("dd/MM/yyyy HH:mm")
+                            </span>
+                        </div>
+                    </div>
+
+                    @if (Model.UpdatedAt.HasValue)
+                    {
+                        <div class="row mb-3">
+                            <div class="col-sm-4">
+                                <strong>Cập nhật lần cuối:</strong>
+                            </div>
+                            <div class="col-sm-8">
+                                <span class="text-muted">
+                                    <i class="fas fa-calendar-check"></i>
+                                    @Model.UpdatedAt.Value.ToString("dd/MM/yyyy HH:mm")
+                                </span>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <hr class="my-4">
+
+    <!-- Confirmation form -->
+    <form asp-action="Delete" method="post" class="text-center">
         <input type="hidden" asp-for="Id" />
-        <input type="submit" value="Xóa" class="delete-btn" />
-        <a asp-action="Index" class="back-link">Quay lại danh sách</a>
+
+        <div class="mb-4">
+            <div class="form-check d-inline-block">
+                <input class="form-check-input" type="checkbox" id="confirmDelete" required>
+                <label class="form-check-label" for="confirmDelete">
+                    Tôi hiểu rằng hành động này không thể hoàn tác
+                </label>
+            </div>
+        </div>
+
+        <button type="submit" class="delete-btn" id="deleteBtn" disabled>
+            <i class="fas fa-trash"></i> Xác nhận xóa
+        </button>
+        <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-info ms-2">
+            <i class="fas fa-eye"></i> Xem chi tiết
+        </a>
+        <a asp-action="Index" class="btn btn-secondary ms-2">
+            <i class="fas fa-times"></i> Hủy bỏ
+        </a>
     </form>
 </div>
+
+@section Scripts {
+    <script>
+        // Enable/disable delete button based on checkbox
+        document.getElementById('confirmDelete').addEventListener('change', function() {
+            const deleteBtn = document.getElementById('deleteBtn');
+            deleteBtn.disabled = !this.checked;
+
+            if (this.checked) {
+                deleteBtn.classList.remove('btn-secondary');
+                deleteBtn.classList.add('delete-btn');
+            } else {
+                deleteBtn.classList.remove('delete-btn');
+                deleteBtn.classList.add('btn-secondary');
+            }
+        });
+
+        // Double confirmation before submit
+        document.querySelector('form').addEventListener('submit', function(e) {
+            if (!confirm('Bạn có thực sự chắc chắn muốn xóa sản phẩm "' + '@Model.Name' + '"?')) {
+                e.preventDefault();
+                return false;
+            }
+
+            // Show loading state
+            const deleteBtn = document.getElementById('deleteBtn');
+            deleteBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang xóa...';
+            deleteBtn.disabled = true;
+        });
+
+        // Prevent accidental form submission with Enter key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && e.target.tagName !== 'BUTTON') {
+                e.preventDefault();
+            }
+        });
+    </script>
+}

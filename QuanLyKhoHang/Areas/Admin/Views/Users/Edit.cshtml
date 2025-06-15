@@ -1,48 +1,42 @@
 ﻿@model Microsoft.AspNetCore.Identity.IdentityUser
-
 @{
-    ViewData["Title"] = "Sửa người dùng";
+    ViewData["Title"] = "Chỉnh sửa người dùng";
     Layout = "~/Views/Shared/_Layout.cshtml";
-
     var allRoles = ViewBag.AllRoles as List<string>;
-    var userRoles = ViewBag.UserRoles as IList<string>;
+    var userRoles = ViewBag.UserRoles as List<string>;
 }
 
-<h2 class="mb-4">@ViewData["Title"]</h2>
+<div class="card shadow p-4">
+    <h2 class="mb-4">@ViewData["Title"]</h2>
 
-<form asp-action="Edit" method="post">
-    <input type="hidden" name="id" value="@Model.Id" />
+    <form asp-action="Edit" method="post">
+        <input type="hidden" asp-for="Id" />
 
-    <div class="mb-3">
-        <label for="email" class="form-label">Email</label>
-        <input name="email" class="form-control" value="@Model.Email" />
-    </div>
+        <div class="mb-3">
+            <label asp-for="Email" class="form-label">Email</label>
+            <input asp-for="Email" class="form-control" readonly />
+        </div>
 
-    <div class="mb-3">
-        <label class="form-label">Vai trò</label>
-        <div>
-            @for (int i = 0; i < allRoles.Count; i++)
+        <div class="mb-3">
+            <label asp-for="UserName" class="form-label">Tên đăng nhập</label>
+            <input asp-for="UserName" class="form-control" readonly />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Vai trò</label>
+            @foreach (var role in allRoles)
             {
-                var role = allRoles[i];
-                var roleId = "role_" + i;
-
-                <div class="form-check form-check-inline">
-                    <input class="form-check-input"
-                           type="checkbox"
-                           name="selectedRoles"
-                           id="@roleId"
-                           value="@role"
-                    @(userRoles != null && userRoles.Contains(role) ? "checked" : "") />
-                    <label class="form-check-label ms-1" for="@roleId">@role</label>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="SelectedRoles" value="@role"
+                    @(userRoles.Contains(role) ? "checked" : "") />
+                    <label class="form-check-label">@role</label>
                 </div>
             }
         </div>
-    </div>
 
-    <button type="submit" class="btn btn-primary">Lưu</button>
-    <a asp-action="Index" class="btn btn-secondary ms-2">Quay lại</a>
-</form>
-
-@section Scripts {
-    <partial name="_ValidationScriptsPartial" />
-}
+        <button type="submit" class="btn btn-primary">
+            <i class="fas fa-save"></i> Lưu thay đổi
+        </button>
+        <a asp-action="Index" class="btn btn-secondary ms-2">Quay lại</a>
+    </form>
+</div>

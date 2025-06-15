@@ -189,18 +189,29 @@ namespace QuanLyKhoHang.Areas.Admin.Controllers
 
         public async Task<IActionResult> Print(int id)
         {
+            // Tìm dòng chi tiết xuất kho
+            var stockOutDetail = await _context.StockOutDetails
+                .Include(d => d.StockOut)
+                .FirstOrDefaultAsync(d => d.Id == id);
+
+            if (stockOutDetail == null || stockOutDetail.StockOut == null)
+            {
+                return NotFound();
+            }
+
+            // Lấy phiếu xuất kho đầy đủ dựa vào StockOutId
             var stockOut = await _context.StockOuts
                 .Include(s => s.Customer)
                 .Include(s => s.StockOutDetails)
                     .ThenInclude(d => d.Product)
-                .FirstOrDefaultAsync(s => s.Id == id);
+                .FirstOrDefaultAsync(s => s.Id == stockOutDetail.StockOutId);
 
             if (stockOut == null)
             {
                 return NotFound();
             }
 
-            return View(stockOut); 
+            return View("Print", stockOut);
         }
 
     }

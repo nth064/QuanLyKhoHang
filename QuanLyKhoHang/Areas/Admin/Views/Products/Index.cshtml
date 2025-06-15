@@ -1,65 +1,192 @@
 ﻿@model IEnumerable<QuanLyKhoHang.Models.Product>
+
 @{
-    ViewData["Title"] = "Quản lý sản phẩm";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Danh sách sản phẩm";
 }
 
 <div class="product-container">
     <div class="product-header">
-        <span class="product-title">Quản lý sản phẩm</span>
-        <a asp-action="Create" class="btn-create"><i class="fa fa-plus"></i> Thêm sản phẩm</a>
+        <h2 class="product-title">QUẢN LÝ SẢN PHẨM</h2>
+        @if (User.IsInRole("Admin"))
+        {
+            <a asp-action="Create" class="btn-create">
+                <i class="fas fa-plus"></i> Thêm sản phẩm
+            </a>
+        }
     </div>
 
-    <!-- Form tìm kiếm nâng cao -->
-    <form asp-action="Index" method="get" class="mb-3 d-flex flex-wrap align-items-center gap-2" style="max-width:600px;">
-        <input type="text" name="searchString" class="form-control" style="max-width:220px;" placeholder="Tìm kiếm..." value="@ViewBag.SearchString" />
-        <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i> Tìm kiếm</button>
+    <!-- Form tìm kiếm -->
+    <form method="get" class="mb-4">
+        <div class="row">
+            <div class="col-md-4">
+                <input type="text" name="searchString" value="@ViewBag.SearchString"
+                       placeholder="Tìm theo tên, mô tả..." class="form-control" />
+            </div>
+            <div class="col-md-3">
+                <select name="categoryId" class="form-control">
+                    <option value="">-- Tất cả danh mục --</option>
+                    @foreach (var category in ViewBag.Categories as SelectList)
+                    {
+                        <option value="@category.Value" selected="@(category.Selected)">@category.Text</option>
+                    }
+                </select>
+            </div>
+           
+            <div class="col-md-3">
+                <button type="submit" class="btn-primary">
+                    <i class="fas fa-search"></i> Tìm kiếm
+                </button>
+            </div>
+        </div>
     </form>
 
+    <!-- Thông báo -->
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <!-- Bảng sản phẩm -->
     <div class="table-responsive">
-        <table class="custom-table product-table">
-            <thead>
-                <tr>
-                    <th>Tên sản phẩm</th>
-                    <th>Mô tả</th>
-                    <th>Giá</th>
-                    <th>Số lượng</th>
-                    <th>Ngày tạo</th>
-                    <th>Danh mục</th>
-                    <th style="width:120px;">Thao tác</th>
-                </tr>
-            </thead>
-            <tbody>
-                @if (!Model.Any())
-                {
+        @if (Model.Any())
+        {
+            <table class="product-table table table-hover">
+                <thead>
                     <tr>
-                        <td colspan="7" style="text-align:center;color:#888;">Chưa có sản phẩm nào.</td>
+                        <th>Hình ảnh</th>
+                        <th>Tên sản phẩm</th>
+                        <th>Danh mục</th>
+                        <th>Giá</th>
+                        <th>Số lượng</th>
+                        <th>Mô tả</th>
+                        <th>Ngày tạo</th>
+                        <th>Thao tác</th>
                     </tr>
-                }
-                else
-                {
-                    foreach (var item in Model)
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
                     {
                         <tr>
-                            <td>@Html.DisplayFor(modelItem => item.Name)</td>
                             <td>
-                                <span class="ellipsis" title="@item.Description">
-                                    @Html.DisplayFor(modelItem => item.Description)
+                                @if (!string.IsNullOrEmpty(item.ImageUrl))
+                                {
+                                    <img src="@item.ImageUrl" alt="@item.Name" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px;" />
+                                }
+                                else
+                                {
+                                    <div style="width: 50px; height: 50px; background: #f8f9fa; border-radius: 4px; display: flex; align-items: center; justify-content: center;">
+                                        <i class="fas fa-image text-muted"></i>
+                                    </div>
+                                }
+                            </td>
+                            <td>@item.Name</td>
+                            <td>@item.Category?.Name</td>
+                            <td>@item.Price.ToString("C0", new System.Globalization.CultureInfo("vi-VN"))</td>
+                            <td>
+                                <span class="badge @(item.Quantity > 10 ? "bg-success" : "bg-danger")">
+                                    @item.Quantity
                                 </span>
                             </td>
-                            <td>@String.Format("{0:N0} ₫", item.Price)</td>
-                            <td>@Html.DisplayFor(modelItem => item.Quantity)</td>
-                            <td>@(item.CreatedAt?.ToString("dd/MM/yyyy HH:mm") ?? "")</td>
-                            <td>@Html.DisplayFor(modelItem => item.Category.Name)</td>
-                            <td class="action-icons">
-                                <a asp-action="Edit" asp-route-id="@item.Id" title="Sửa"><i class="fa-solid fa-pen-to-square"></i></a>
-                                <a asp-action="Details" asp-route-id="@item.Id" title="Chi tiết"><i class="fa-solid fa-circle-info"></i></a>
-                                <a asp-action="Delete" asp-route-id="@item.Id" title="Xóa"><i class="fa-solid fa-trash"></i></a>
+                            <td>
+                                <span class="ellipsis" title="@item.Description">
+                                    @item.Description
+                                </span>
+                            </td>
+                            <td>@item.CreatedAt.Value.ToString("dd/MM/yyyy")</td>
+                            <td>
+                                <div class="action-icons">
+                                    <a asp-action="Details" asp-route-id="@item.Id" title="Xem chi tiết">
+                                        <i class="fas fa-circle-info"></i>
+                                    </a>
+                                    @if (User.IsInRole("Admin"))
+                                    {
+                                        <a asp-action="Edit" asp-route-id="@item.Id" title="Chỉnh sửa">
+                                            <i class="fas fa-pen-to-square"></i>
+                                        </a>
+                                        <a asp-action="Delete" asp-route-id="@item.Id" title="Xóa">
+                                            <i class="fas fa-trash"></i>
+                                        </a>
+                                    }
+                                </div>
                             </td>
                         </tr>
                     }
+                </tbody>
+            </table>
+
+            <!-- Phân trang -->
+            @if (ViewBag.TotalPages > 1)
+            {
+                <nav aria-label="Phân trang">
+                    <ul class="pagination justify-content-center">
+                        @if (ViewBag.CurrentPage > 1)
+                        {
+                            <li class="page-item">
+                                <a class="page-link" asp-action="Index"
+                                   asp-route-searchString="@ViewBag.SearchString"
+                                   asp-route-categoryId="@ViewBag.CategoryId"
+                                   asp-route-pageSize="@ViewBag.PageSize"
+                                   asp-route-page="@(ViewBag.CurrentPage - 1)">Trước</a>
+                            </li>
+                        }
+
+                        @for (int i = Math.Max(1, ViewBag.CurrentPage - 2); i <= Math.Min(ViewBag.TotalPages, ViewBag.CurrentPage + 2); i++)
+                        {
+                            <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
+                                <a class="page-link" asp-action="Index"
+                                   asp-route-searchString="@ViewBag.SearchString"
+                                   asp-route-categoryId="@ViewBag.CategoryId"
+                                   asp-route-pageSize="@ViewBag.PageSize"
+                                   asp-route-page="@i">@i</a>
+                            </li>
+                        }
+
+                        @if (ViewBag.CurrentPage < ViewBag.TotalPages)
+                        {
+                            <li class="page-item">
+                                <a class="page-link" asp-action="Index"
+                                   asp-route-searchString="@ViewBag.SearchString"
+                                   asp-route-categoryId="@ViewBag.CategoryId"
+                                   asp-route-pageSize="@ViewBag.PageSize"
+                                   asp-route-page="@(ViewBag.CurrentPage + 1)">Sau</a>
+                            </li>
+                        }
+                    </ul>
+                </nav>
+            }
+
+            <!-- Thông tin phân trang -->
+            <div class="text-center mt-3">
+                <small class="text-muted">
+                    Hiển thị @((ViewBag.CurrentPage - 1) * ViewBag.PageSize + 1) -
+                    @(Math.Min(ViewBag.CurrentPage * ViewBag.PageSize, ViewBag.TotalCount))
+                    trong tổng số @ViewBag.TotalCount sản phẩm
+                </small>
+            </div>
+        }
+        else
+        {
+            <div class="text-center py-5">
+                <i class="fas fa-box-open fa-3x text-muted mb-3"></i>
+                <h5 class="text-muted">Không tìm thấy sản phẩm nào</h5>
+                @if (User.IsInRole("Admin"))
+                {
+                    <a asp-action="Create" class="btn-primary mt-3">
+                        <i class="fas fa-plus"></i> Thêm sản phẩm đầu tiên
+                    </a>
                 }
-            </tbody>
-        </table>
+            </div>
+        }
     </div>
 </div>

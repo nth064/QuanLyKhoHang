@@ -7,7 +7,7 @@ using QuanLyKhoHang.Models;
 namespace QuanLyKhoHang.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    [Authorize(Roles = SD.Role_Admin + "," + SD.Role_StaffStockOut)]
+    [Authorize(Roles = SD.Role_Admin)]
     public class UsersController : Controller
     {
         private readonly UserManager<IdentityUser> _userManager;

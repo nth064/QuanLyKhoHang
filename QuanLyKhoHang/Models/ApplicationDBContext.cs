@@ -19,6 +19,5 @@ namespace QuanLyKhoHang.Models
         public DbSet<StockInDetail> StockInDetails { get; set; }
         public DbSet<StockOut> StockOuts { get; set; }
         public DbSet<StockOutDetail> StockOutDetails { get; set; }
-
     }
 }

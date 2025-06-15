@@ -5,23 +5,25 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-
 <div class="form-container">
-    <div class="form-title">Chỉnh sửa danh mục</div>
+    <h2 class="form-title">CHỈNH SỬA DANH MỤC</h2>
     <form asp-action="Edit">
-        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
         <input type="hidden" asp-for="Id" />
-        <div class="form-group">
-            <label asp-for="Name" class="control-label">Tên danh mục</label>
+        <div class="form-group mb-3">
+            <label asp-for="Name" class="form-label">Tên danh mục</label>
             <input asp-for="Name" class="form-control" />
             <span asp-validation-for="Name" class="text-danger"></span>
         </div>
-        <br />
-        <div class="form-group" style="text-align:center;">
-            <input type="submit" value="Lưu thay đổi" class="btn btn-primary" />
+        <div class="form-group text-center">
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-save"></i> Lưu thay đổi
+            </button>
+            <a asp-action="Index" class="btn btn-secondary ms-2">
+                <i class="fas fa-arrow-left"></i> Quay lại danh sách
+            </a>
         </div>
     </form>
-    <a asp-action="Index" class="back-link">Quay lại danh sách</a>
 </div>
 
 @section Scripts {
